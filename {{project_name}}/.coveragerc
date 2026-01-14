@@ -1,0 +1,11 @@
+[run]
+omit =
+    src/migrations/*
+    src/schemas/*
+    src/models/*
+    src/main.py
+    src/exceptions
+    tests/*
+    */__init__.py
+    */exceptions.py
+    */db/database.py
