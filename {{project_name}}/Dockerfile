@@ -54,6 +54,7 @@ EXPOSE 8000
 FROM base AS development
 
 ENV PATH="/app/.venv/bin:{$PATH}"
+ENV PYTHONPATH="/app/src"
 
 COPY ./tests/ ./app/tests
 COPY ./.coveragerc ./app
@@ -61,7 +62,7 @@ COPY ./pyproject.toml ./app
 
 WORKDIR /app/src
 
-CMD ["uvicorn", "main:app","--workers","4", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["fastapi", "dev", "main.py", "--host", "0.0.0.0"]
 
 
 # Production ready stage
