@@ -1,0 +1,49 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+      args:
+        BUILD_ENV: development
+    image: {{module_name}}:latest
+    container_name: {{module_name}}
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - ./src:/app/src:Z
+      - ./tests:/app/tests:Z
+
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    container_name: {{module_name}}-postgres
+    environment:
+      - POSTGRES_DB={{module_name}}
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  db-test:
+    image: postgres:17
+    restart: unless-stopped
+    container_name: {{module_name}}-postgres-test
+    environment:
+      - POSTGRES_DB=test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5433:5432"
+
+volumes:
+  postgres_data:
