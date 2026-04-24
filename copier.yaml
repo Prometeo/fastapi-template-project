@@ -2,3 +2,29 @@
 project_name:
     type: str
     help: What is your project name?
+
+
+_tasks:
+  - "git init"
+  - "rm {{ project_name }}/README.md"
+  # base dependency requirements
+  - "uv add --group base alembic"
+  - "uv add --group base argon2-cffi"
+  - "uv add --group base email-validator"
+  - "uv add --group base fastapi[standard]"
+  - "uv add --group base loguru"
+  - "uv add --group base psycopg2-binary"
+  - "uv add --group base python-jose[cryptography]"
+  - "uv add --group base slowapi"
+  - "uv add --group base sqlalchemy"
+  - "uv add --group base uvloop"
+  # dev dependency requirements
+  - "uv add --group dev prek"
+  # linter dependency requiements
+  - "uv add --group linter black"
+  - "uv add --group linter ruff"
+  - "uv add --group linter pyefly"
+  # test dependency requiements
+  - "uv add --group test pytest"
+  - "uv add --group test pytest-asyncio"
+  - "uv add --group test pytest-cov"
