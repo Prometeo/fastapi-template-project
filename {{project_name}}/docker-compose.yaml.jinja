@@ -6,8 +6,8 @@ services:
       target: development
       args:
         BUILD_ENV: development
-    image: {{module_name}}:latest
-    container_name: {{module_name}}
+    image: {{ project_name }}:latest
+    container_name: {{ project_name }}
     ports:
       - "8000:8000"
     restart: unless-stopped
@@ -24,9 +24,9 @@ services:
   db:
     image: postgres:17
     restart: unless-stopped
-    container_name: {{module_name}}-postgres
+    container_name: {{ project_name }}-postgres
     environment:
-      - POSTGRES_DB={{module_name}}
+      - POSTGRES_DB={{ project_name }}
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
@@ -37,7 +37,7 @@ services:
   db-test:
     image: postgres:17
     restart: unless-stopped
-    container_name: {{module_name}}-postgres-test
+    container_name: {{ project_name }}-postgres-test
     environment:
       - POSTGRES_DB=test
       - POSTGRES_USER=postgres
