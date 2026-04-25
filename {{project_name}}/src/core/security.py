@@ -1,19 +1,21 @@
 from __future__ import annotations
+from typing import TYPE_CHECKING
 from typing import Any, Annotated
 from fastapi import Depends
-from datetime import timedelta, datetime, timezone
+from datetime import timedelta, datetime, UTC
 from fastapi.security import OAuth2PasswordBearer
 from argon2 import PasswordHasher
 from argon2.exceptions import InvalidHashError
 from core.config import config
 from jose import jwt, JWTError
 from crud.auth import get_user
-from sqlalchemy.orm import Session
-from models.user import User
 from exceptions import UnauthorizedError
 from schemas.user import UserResponse
 from db.database import get_db
 
+if TYPE_CHECKING:
+    from sqlalchemy.orm import Session
+    from models.user import User
 
 ph: PasswordHasher = PasswordHasher()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
@@ -27,7 +29,9 @@ def verify_password(plain_password: str, hashed: str) -> bool:
     return ph.verify(hashed, plain_password)
 
 
-def create_access_token(data: dict, expires_minutes: int = config.ACCESS_TOKEN_EXPIRE_MINUTES) -> str:
+def create_access_token(
+    data: dict, expires_minutes: int = config.ACCESS_TOKEN_EXPIRE_MINUTES
+) -> str:
     to_encode: dict[Any, Any] = data.copy()
     expire: datetime = datetime.now(timezone.utc) + timedelta(minutes=expires_minutes)
     to_encode.update({"exp": expire})
@@ -59,7 +63,9 @@ def verify_token(token: str) -> str:
         raise UnauthorizedError
 
 
-async def get_current_user(session: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> Any:
+async def get_current_user(
+    session: Session = Depends(get_db), token: str = Depends(oauth2_scheme)
+) -> Any:
     username: str = verify_token(token)
     user: User | None = get_user(session, username)
     if not user:

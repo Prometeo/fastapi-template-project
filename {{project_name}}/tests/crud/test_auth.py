@@ -1,11 +1,16 @@
-from models.user import User
+from typing import TYPE_CHECKING
 from crud.auth import get_user
 from crud.user import create_user, delete_user
 from core.security import hash_password
 
+if TYPE_CHECKING:
+    from models.user import User
+
 
 def test_authenticate_user(db_test_session, user_test, clean_data) -> None:
-    created_user: User | None = create_user(db_test_session, user_test, hash_password(user_test.password))
+    created_user: User | None = create_user(
+        db_test_session, user_test, hash_password(user_test.password)
+    )
     retrieved_user: User | None = get_user(db_test_session, created_user.username)
     assert retrieved_user
     assert created_user.username == retrieved_user.username
@@ -17,7 +22,9 @@ def test_authenticate_non_existent_user(db_test_session, clean_data) -> None:
 
 
 def test_authenticate_deleted_user(db_test_session, user_test, clean_data) -> None:
-    created_user: User | None = create_user(db_test_session, user_test, hash_password(user_test.password))
+    created_user: User | None = create_user(
+        db_test_session, user_test, hash_password(user_test.password)
+    )
     delete_user(db_test_session, created_user.id)
     retrieved_user: User | None = get_user(db_test_session, created_user.username)
     assert not retrieved_user

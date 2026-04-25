@@ -1,8 +1,11 @@
 from __future__ import annotations
-
+from typing import TYPE_CHECKING
 from starlette.middleware.base import BaseHTTPMiddleware
-from fastapi import Request
+
 from core.logger import logger
+
+if TYPE_CHECKING:
+    from fastapi import Request
 
 
 class LogRequests(BaseHTTPMiddleware):
