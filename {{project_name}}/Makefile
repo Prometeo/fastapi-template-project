@@ -23,6 +23,11 @@ up:                                                 ## Start containers
 	@docker compose up -d
 
 
+.PHONY: stop
+stop:                                               ## Stop containers
+	@docker compose stop
+
+
 .PHONY: install
 install:											## Install dependencies
 	@uv sync
@@ -53,3 +58,8 @@ migrate:                                            ## Apply migrations (E.g: ma
 .PHONY: tests
 tests:                                               ## Run tests
 	@docker compose exec --workdir /app api pytest --cov --cov-report=term-missing
+
+
+.PHONY: superuser
+superuser:                                           ## Create superuser
+	@docker compose exec --workdir /app/src api python create_superuser.py
