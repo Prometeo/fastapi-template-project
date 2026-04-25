@@ -6,9 +6,9 @@ from fastapi import APIRouter
 from services.auth import AUTHService
 from schemas.auth import UserTokenResponse
 from exceptions import AuthenticationError
+from fastapi.security import OAuth2PasswordRequestForm
 
 if TYPE_CHECKING:
-    from fastapi.security import OAuth2PasswordRequestForm
     from db.database import DbSession
 
 router = APIRouter(prefix="/auth", tags=["auth"])
