@@ -4,11 +4,11 @@ from fastapi import APIRouter, Depends
 from services.user import UserService
 from schemas.user import UserResponse, UserCreate, UserUpdate
 from exceptions import UserNotFoundError
+from db.database import DbSession
+from core.security import CurrentUser
 
 if TYPE_CHECKING:
-    from db.database import DbSession
     from models.user import User
-    from core.security import CurrentUser
 
 
 router = APIRouter(prefix="/users", tags=["Users"])
