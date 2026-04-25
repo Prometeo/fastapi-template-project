@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends
 from services.user import UserService
 from schemas.user import UserResponse, UserCreate, UserUpdate
 from exceptions import UserNotFoundError
-from db.database import DbSession
-from core.security import CurrentUser
+from core.security import CurrentUser  # noqa: TC001
+from db.database import DbSession  # noqa: TC001
 
 if TYPE_CHECKING:
     from models.user import User
