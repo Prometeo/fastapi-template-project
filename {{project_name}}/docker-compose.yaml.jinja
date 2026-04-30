@@ -6,6 +6,8 @@ services:
       target: development
       args:
         BUILD_ENV: development
+        USER_UID: ${USER_UID}
+        USER_GID: ${USER_GID}
     image: {{ project_name }}:latest
     container_name: {{ project_name }}
     ports:

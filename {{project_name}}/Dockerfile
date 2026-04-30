@@ -53,12 +53,35 @@ EXPOSE 8000
 # Development stage
 FROM base AS development
 
-ENV PATH="/app/.venv/bin:{$PATH}"
+ARG USER_UID
+ARG USER_GID
+
+ENV PATH="/app/.venv/bin:${PATH}"
 ENV PYTHONPATH="/app/src"
 
-COPY ./tests/ ./app/tests
-COPY ./.coveragerc ./app
-COPY ./pyproject.toml ./app
+RUN echo "UID=${USER_UID} GID=${USER_GID}"
+
+# Create group before creating the user
+RUN addgroup --gid "${USER_GID}" appgroup && \
+    adduser \
+        --disabled-password \
+        --gecos "" \
+        --home "/nonexistent" \
+        --shell "/usr/sbin/nologin" \
+        --no-create-home \
+        --uid "${USER_UID}" \
+        --gid "${USER_GID}" \
+        appuser
+
+# Give ownership of /app to appuser
+RUN chown -R appuser /app
+
+# Switch to the non-privileged user to run the application.
+USER appuser
+
+COPY --chown=appuser:appuser ./tests/ ./app/tests
+COPY --chown=appuser:appuser ./.coveragerc ./app
+COPY --chown=appuser:appuser ./pyproject.toml ./app
 
 WORKDIR /app/src
 

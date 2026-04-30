@@ -18,6 +18,11 @@ help:
 # =============================================================================
 
 
+.PHONY: build
+build:                                                 ## Build image
+	USER_UID=$(shell id -u) USER_GID=$(shell id -g) docker-compose build
+
+
 .PHONY: up
 up:                                                 ## Start containers
 	@docker compose up -d
