@@ -13,10 +13,12 @@ from core.security import get_current_user
 
 DATABASE_URL: str = config.DATABASE_TEST_URL
 engine: Engine = create_engine(DATABASE_URL)
-TestingSessionLocal: sessionmaker[Session] = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+TestingSessionLocal: sessionmaker[Session] = sessionmaker(
+    autocommit=False, autoflush=False, bind=engine
+)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def db_test_session():
     Base.metadata.create_all(bind=engine)
     db = TestingSessionLocal()
@@ -31,7 +33,11 @@ def db_test_session():
 @pytest.fixture()
 def user_test() -> UserCreate:
     return UserCreate(
-        username="test1234", email="test@gmail.com", first_name="test", last_name="test", password="testpassword"
+        username="test1234",
+        email="test@gmail.com",
+        first_name="test",
+        last_name="test",
+        password="testpassword",
     )
 
 
@@ -68,7 +74,13 @@ def client(db_test_session: Session):
 @pytest.fixture(scope="function")
 def authorized_client(client):
     def mock_get_current_user():
-        return UserResponse(id=1001, username="testuser", first_name="Test", last_name="User", email="test@example.com")
+        return UserResponse(
+            id=1001,
+            username="testuser",
+            first_name="Test",
+            last_name="User",
+            email="test@example.com",
+        )
 
     app.dependency_overrides[get_current_user] = mock_get_current_user
 
