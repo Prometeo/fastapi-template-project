@@ -22,7 +22,7 @@ def get_user_service(db: DbSession) -> UserService:
 def get_users(
     current_user: CurrentUser, service: UserService = Depends(get_user_service)
 ) -> list[User]:
-    return service.list_users()
+    return service.list_users_service()
 
 
 @router.get("/{user_id}", response_model=UserResponse, status_code=200)
@@ -31,7 +31,7 @@ def get_user_by_id(
     current_user: CurrentUser,
     service: UserService = Depends(get_user_service),
 ) -> User:
-    user: User | None = service.get_user_by_id(user_id)
+    user: User | None = service.get_user_by_id_service(user_id)
     if not user:
         raise UserNotFoundError(user_id)
     return user
@@ -42,8 +42,8 @@ def create_user(
     current_user: CurrentUser,
     user_in: UserCreate,
     service: UserService = Depends(get_user_service),
-) -> User:
-    return service.create_user(user_in)
+) -> User | None:
+    return service.create_user_service(user_in)
 
 
 @router.put("/{user_id}", response_model=UserResponse, status_code=200)
@@ -53,7 +53,7 @@ def update_user(
     current_user: CurrentUser,
     service: UserService = Depends(get_user_service),
 ) -> User:
-    user: User | None = service.update_user(user_id, user_in)
+    user: User | None = service.update_user_service(user_id, user_in)
     if not user:
         raise UserNotFoundError(user_id)
     return user
@@ -65,6 +65,6 @@ def delete_user(
     current_user: CurrentUser,
     service: UserService = Depends(get_user_service),
 ) -> None:
-    result: bool = service.delete_user(user_id)
+    result: bool = service.delete_user_service(user_id)
     if not result:
         raise UserNotFoundError(user_id)
