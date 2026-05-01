@@ -59,9 +59,6 @@ ARG USER_GID
 ENV PATH="/app/.venv/bin:${PATH}"
 ENV PYTHONPATH="/app/src"
 
-RUN echo "UID=${USER_UID} GID=${USER_GID}"
-
-# Create group before creating the user
 RUN addgroup --gid "${USER_GID}" appgroup && \
     adduser \
         --disabled-password \
